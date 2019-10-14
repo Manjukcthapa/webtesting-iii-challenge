@@ -1,16 +1,40 @@
 // Test away!
-import React from 'react';
-import renderer from 'react-test-renderer';
+import React from "react"
+import { render, fireEvent } from "react-testing-library"
+import "react-testing-library/cleanup-after-each";
+import Controls from "./Controls";
 
-import Controls from './Controls';
+describe("<Controls />", () => {
+  it("open and unlock", () => {
+    const mock = jest.fn();
+    const { queryByText } = render(<Controls locked={false} closed={false} toggleClosed={mock} />)
+    const lockButton = queryByText("Lock Gate");
+    expect(lockButton.disabled).toBe(true)
+    const closeButton = queryByText("Close Gate");
+    expect(closeButton.disabled).toBe(false)
+    fireEvent.click(closeButton);
+    expect(mock).toBeCalled()
+  })
 
-describe('<Controls />', () => {
-    it('runs tests', () => {
-    expect(true).toBe(true);
-    });
+  it("closed and unlock", () => {
+    const mock = jest.fn();
+    const { queryByText } = render(<Controls locked={false} closed={true} toggleClosed={mock} />)
+    const lockButton = queryByText("Lock Gate");
+    expect(lockButton.disabled).toBe(false)
+    const openButton = queryByText("Open Gate");
+    expect(openButton.disabled).toBe(false)
+    fireEvent.click(openButton);
+    expect(mock).toBeCalled()
+  })
 
-    it('should match snapshot', () => {
-    const tree = renderer.create(<Controls />);
-    expect(tree.toJSON()).toMatchSnapshot();
-});
-});
+  it("closed and locked", () => {
+    const mock = jest.fn();
+    const { queryByText } = render(<Controls locked={true} closed={true} toggleLocked={mock} />)
+    const unlockButton = queryByText("Unlock Gate");
+    expect(unlockButton.disabled).toBe(false)
+    const openButton = queryByText("Open Gate");
+    expect(openButton.disabled).toBe(true)
+    fireEvent.click(unlockButton);
+    expect(mock).toBeCalled()
+  })
+})
