@@ -7,7 +7,8 @@ import Controls from '../controls/Controls';
 afterEach(cleanup)
 
 it('renders without crashing', () => {
+      render(<Controls />);
     render(<Display />);
-    render(<Controls />);
+  
 
 });
